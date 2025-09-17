@@ -123,6 +123,10 @@ spec:
                         trace output.
                       items:
                         properties:
+                          argType:
+                            description: Type of original argument (only used when
+                              Resolve is set)
+                            type: string
                           index:
                             description: Position of the argument.
                             format: int32
@@ -224,6 +228,10 @@ spec:
                       description: A list of data to include in the trace output.
                       items:
                         properties:
+                          argType:
+                            description: Type of original argument (only used when
+                              Resolve is set)
+                            type: string
                           index:
                             description: Position of the argument.
                             format: int32
@@ -338,6 +346,10 @@ spec:
                     returnArg:
                       description: A return argument to include in the trace output.
                       properties:
+                        argType:
+                          description: Type of original argument (only used when Resolve
+                            is set)
+                          type: string
                         index:
                           description: Position of the argument.
                           format: int32
@@ -1070,6 +1082,10 @@ spec:
                         trace output.
                       items:
                         properties:
+                          argType:
+                            description: Type of original argument (only used when
+                              Resolve is set)
+                            type: string
                           index:
                             description: Position of the argument.
                             format: int32
@@ -1839,6 +1855,10 @@ spec:
                         trace output.
                       items:
                         properties:
+                          argType:
+                            description: Type of original argument (only used when
+                              Resolve is set)
+                            type: string
                           index:
                             description: Position of the argument.
                             format: int32
@@ -2552,6 +2572,10 @@ spec:
                         trace output.
                       items:
                         properties:
+                          argType:
+                            description: Type of original argument (only used when
+                              Resolve is set)
+                            type: string
                           index:
                             description: Position of the argument.
                             format: int32
@@ -3269,6 +3293,10 @@ spec:
                         trace output.
                       items:
                         properties:
+                          argType:
+                            description: Type of original argument (only used when
+                              Resolve is set)
+                            type: string
                           index:
                             description: Position of the argument.
                             format: int32
@@ -3363,6 +3391,9 @@ spec:
                         - type
                         type: object
                       type: array
+                    btfFile:
+                      description: BTF file for the binary
+                      type: string
                     message:
                       description: |-
                         A short message of 256 characters max that will be included
