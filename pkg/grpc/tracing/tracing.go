@@ -119,6 +119,18 @@ func getKprobeArgument(arg tracingapi.MsgGenericKprobeArg) *tetragon.KprobeArgum
 	case tracingapi.MsgGenericKprobeArgUInt:
 		a.Arg = &tetragon.KprobeArgument_UintArg{UintArg: e.Value}
 		a.Label = e.Label
+	case tracingapi.MsgGenericKprobeArgUInt16:
+		a.Arg = &tetragon.KprobeArgument_Uint16Arg{Uint16Arg: uint32(e.Value)}
+		a.Label = e.Label
+	case tracingapi.MsgGenericKprobeArgInt16:
+		a.Arg = &tetragon.KprobeArgument_Int16Arg{Int16Arg: int32(e.Value)}
+		a.Label = e.Label
+	case tracingapi.MsgGenericKprobeArgUInt8:
+		a.Arg = &tetragon.KprobeArgument_Uint8Arg{Uint8Arg: uint32(e.Value)}
+		a.Label = e.Label
+	case tracingapi.MsgGenericKprobeArgInt8:
+		a.Arg = &tetragon.KprobeArgument_Int8Arg{Int8Arg: int32(e.Value)}
+		a.Label = e.Label
 	case tracingapi.MsgGenericKprobeArgSize:
 		a.Arg = &tetragon.KprobeArgument_SizeArg{SizeArg: e.Value}
 		a.Label = e.Label
@@ -523,6 +535,22 @@ func (msg *MsgGenericTracepointUnix) HandleMessage() *tetragon.GetEventsResponse
 		case int32:
 			tetragonArgs = append(tetragonArgs, &tetragon.KprobeArgument{Arg: &tetragon.KprobeArgument_IntArg{
 				IntArg: v,
+			}})
+		case uint16:
+			tetragonArgs = append(tetragonArgs, &tetragon.KprobeArgument{Arg: &tetragon.KprobeArgument_Uint16Arg{
+				Uint16Arg: uint32(v),
+			}})
+		case int16:
+			tetragonArgs = append(tetragonArgs, &tetragon.KprobeArgument{Arg: &tetragon.KprobeArgument_Int16Arg{
+				Int16Arg: int32(v),
+			}})
+		case uint8:
+			tetragonArgs = append(tetragonArgs, &tetragon.KprobeArgument{Arg: &tetragon.KprobeArgument_Uint8Arg{
+				Uint8Arg: uint32(v),
+			}})
+		case int8:
+			tetragonArgs = append(tetragonArgs, &tetragon.KprobeArgument{Arg: &tetragon.KprobeArgument_Int8Arg{
+				Int8Arg: int32(v),
 			}})
 		case string:
 			tetragonArgs = append(tetragonArgs, &tetragon.KprobeArgument{Arg: &tetragon.KprobeArgument_StringArg{

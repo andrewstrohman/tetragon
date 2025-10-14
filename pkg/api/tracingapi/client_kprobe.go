@@ -150,6 +150,62 @@ func (m MsgGenericKprobeArgUInt) IsReturnArg() bool {
 	return m.Index == ReturnArgIndex
 }
 
+type MsgGenericKprobeArgUInt16 struct {
+	Index uint64
+	Value uint16
+	Label string
+}
+
+func (m MsgGenericKprobeArgUInt16) GetIndex() uint64 {
+	return m.Index
+}
+
+func (m MsgGenericKprobeArgUInt16) IsReturnArg() bool {
+	return m.Index == ReturnArgIndex
+}
+
+type MsgGenericKprobeArgInt16 struct {
+	Index uint64
+	Value int16
+	Label string
+}
+
+func (m MsgGenericKprobeArgInt16) GetIndex() uint64 {
+	return m.Index
+}
+
+func (m MsgGenericKprobeArgInt16) IsReturnArg() bool {
+	return m.Index == ReturnArgIndex
+}
+
+type MsgGenericKprobeArgUInt8 struct {
+	Index uint64
+	Value uint8
+	Label string
+}
+
+func (m MsgGenericKprobeArgUInt8) GetIndex() uint64 {
+	return m.Index
+}
+
+func (m MsgGenericKprobeArgUInt8) IsReturnArg() bool {
+	return m.Index == ReturnArgIndex
+}
+
+type MsgGenericKprobeArgInt8 struct {
+	Index uint64
+	Value int8
+	Label string
+}
+
+func (m MsgGenericKprobeArgInt8) GetIndex() uint64 {
+	return m.Index
+}
+
+func (m MsgGenericKprobeArgInt8) IsReturnArg() bool {
+	return m.Index == ReturnArgIndex
+}
+
 type MsgGenericKprobeArgSize struct {
 	Index uint64
 	Value uint64
