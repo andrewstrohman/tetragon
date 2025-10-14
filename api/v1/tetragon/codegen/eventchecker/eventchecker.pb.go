@@ -6419,6 +6419,10 @@ type KprobeArgumentChecker struct {
 	SyscallId             *SyscallIdChecker            `json:"syscallId,omitempty"`
 	SockaddrArg           *KprobeSockaddrChecker       `json:"sockaddrArg,omitempty"`
 	BpfProgArg            *KprobeBpfProgChecker        `json:"bpfProgArg,omitempty"`
+	Uint16Arg             *uint32                      `json:"uint16Arg,omitempty"`
+	Int16Arg              *int32                       `json:"int16Arg,omitempty"`
+	Uint8Arg              *uint32                      `json:"uint8Arg,omitempty"`
+	Int8Arg               *int32                       `json:"int8Arg,omitempty"`
 	Label                 *stringmatcher.StringMatcher `json:"label,omitempty"`
 }
 
@@ -6739,6 +6743,46 @@ func (checker *KprobeArgumentChecker) Check(event *tetragon.KprobeArgument) erro
 				return fmt.Errorf("KprobeArgumentChecker: BpfProgArg check failed: %T is not a BpfProgArg", event)
 			}
 		}
+		if checker.Uint16Arg != nil {
+			switch event := event.Arg.(type) {
+			case *tetragon.KprobeArgument_Uint16Arg:
+				if *checker.Uint16Arg != event.Uint16Arg {
+					return fmt.Errorf("Uint16Arg has value %d which does not match expected value %d", event.Uint16Arg, *checker.Uint16Arg)
+				}
+			default:
+				return fmt.Errorf("KprobeArgumentChecker: Uint16Arg check failed: %T is not a Uint16Arg", event)
+			}
+		}
+		if checker.Int16Arg != nil {
+			switch event := event.Arg.(type) {
+			case *tetragon.KprobeArgument_Int16Arg:
+				if *checker.Int16Arg != event.Int16Arg {
+					return fmt.Errorf("Int16Arg has value %d which does not match expected value %d", event.Int16Arg, *checker.Int16Arg)
+				}
+			default:
+				return fmt.Errorf("KprobeArgumentChecker: Int16Arg check failed: %T is not a Int16Arg", event)
+			}
+		}
+		if checker.Uint8Arg != nil {
+			switch event := event.Arg.(type) {
+			case *tetragon.KprobeArgument_Uint8Arg:
+				if *checker.Uint8Arg != event.Uint8Arg {
+					return fmt.Errorf("Uint8Arg has value %d which does not match expected value %d", event.Uint8Arg, *checker.Uint8Arg)
+				}
+			default:
+				return fmt.Errorf("KprobeArgumentChecker: Uint8Arg check failed: %T is not a Uint8Arg", event)
+			}
+		}
+		if checker.Int8Arg != nil {
+			switch event := event.Arg.(type) {
+			case *tetragon.KprobeArgument_Int8Arg:
+				if *checker.Int8Arg != event.Int8Arg {
+					return fmt.Errorf("Int8Arg has value %d which does not match expected value %d", event.Int8Arg, *checker.Int8Arg)
+				}
+			default:
+				return fmt.Errorf("KprobeArgumentChecker: Int8Arg check failed: %T is not a Int8Arg", event)
+			}
+		}
 		if checker.Label != nil {
 			if err := checker.Label.Match(event.Label); err != nil {
 				return fmt.Errorf("Label check failed: %w", err)
@@ -6933,6 +6977,30 @@ func (checker *KprobeArgumentChecker) WithBpfProgArg(check *KprobeBpfProgChecker
 	return checker
 }
 
+// WithUint16Arg adds a Uint16Arg check to the KprobeArgumentChecker
+func (checker *KprobeArgumentChecker) WithUint16Arg(check uint32) *KprobeArgumentChecker {
+	checker.Uint16Arg = &check
+	return checker
+}
+
+// WithInt16Arg adds a Int16Arg check to the KprobeArgumentChecker
+func (checker *KprobeArgumentChecker) WithInt16Arg(check int32) *KprobeArgumentChecker {
+	checker.Int16Arg = &check
+	return checker
+}
+
+// WithUint8Arg adds a Uint8Arg check to the KprobeArgumentChecker
+func (checker *KprobeArgumentChecker) WithUint8Arg(check uint32) *KprobeArgumentChecker {
+	checker.Uint8Arg = &check
+	return checker
+}
+
+// WithInt8Arg adds a Int8Arg check to the KprobeArgumentChecker
+func (checker *KprobeArgumentChecker) WithInt8Arg(check int32) *KprobeArgumentChecker {
+	checker.Int8Arg = &check
+	return checker
+}
+
 // WithLabel adds a Label check to the KprobeArgumentChecker
 func (checker *KprobeArgumentChecker) WithLabel(check *stringmatcher.StringMatcher) *KprobeArgumentChecker {
 	checker.Label = check
@@ -7112,6 +7180,34 @@ func (checker *KprobeArgumentChecker) FromKprobeArgument(event *tetragon.KprobeA
 	case *tetragon.KprobeArgument_BpfProgArg:
 		if event.BpfProgArg != nil {
 			checker.BpfProgArg = NewKprobeBpfProgChecker().FromKprobeBpfProg(event.BpfProgArg)
+		}
+	}
+	switch event := event.Arg.(type) {
+	case *tetragon.KprobeArgument_Uint16Arg:
+		{
+			val := event.Uint16Arg
+			checker.Uint16Arg = &val
+		}
+	}
+	switch event := event.Arg.(type) {
+	case *tetragon.KprobeArgument_Int16Arg:
+		{
+			val := event.Int16Arg
+			checker.Int16Arg = &val
+		}
+	}
+	switch event := event.Arg.(type) {
+	case *tetragon.KprobeArgument_Uint8Arg:
+		{
+			val := event.Uint8Arg
+			checker.Uint8Arg = &val
+		}
+	}
+	switch event := event.Arg.(type) {
+	case *tetragon.KprobeArgument_Int8Arg:
+		{
+			val := event.Int8Arg
+			checker.Int8Arg = &val
 		}
 	}
 	checker.Label = stringmatcher.Full(event.Label)

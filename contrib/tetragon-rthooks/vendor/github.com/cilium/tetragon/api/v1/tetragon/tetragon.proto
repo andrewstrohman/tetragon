@@ -474,6 +474,10 @@ message KprobeArgument {
     SyscallId syscall_id = 29;
     KprobeSockaddr sockaddr_arg = 30;
     KprobeBpfProg bpf_prog_arg = 31;
+    uint32 uint16_arg = 32;
+    int32 int16_arg = 33;
+    uint32 uint8_arg = 34;
+    int32 int8_arg = 35;
   }
   string label = 18;
 }

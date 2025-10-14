@@ -608,6 +608,10 @@ found.
 | syscall_id | [SyscallId](#tetragon-SyscallId) |  |  |
 | sockaddr_arg | [KprobeSockaddr](#tetragon-KprobeSockaddr) |  |  |
 | bpf_prog_arg | [KprobeBpfProg](#tetragon-KprobeBpfProg) |  |  |
+| uint16_arg | [uint32](#uint32) |  |  |
+| int16_arg | [int32](#int32) |  |  |
+| uint8_arg | [uint32](#uint32) |  |  |
+| int8_arg | [int32](#int32) |  |  |
 | label | [string](#string) |  |  |
 
 
