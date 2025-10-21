@@ -211,6 +211,10 @@ read_arg(void *ctx, struct msg_generic_kprobe *e, int index, int type,
 	long size = -1;
 	const struct path *path_arg = 0;
 	struct path path_buf;
+	__u8 temp_u8;
+	__u16 temp_u16;
+	__s8 temp_s8;
+	__s16 temp_s16;
 
 	if (orig_off >= 16383 - min_size)
 		return 0;
@@ -297,17 +301,29 @@ read_arg(void *ctx, struct msg_generic_kprobe *e, int index, int type,
 		probe_read(args, sizeof(__u32), &arg);
 		size = sizeof(__u32);
 		break;
-	case s16_ty:
 	case u16_ty:
 		/* read 2 bytes, but send 4 to keep alignment */
-		probe_read(args, sizeof(__u16), &arg);
+		probe_read(&temp_u16, sizeof(__u16), &arg);
+		*((__u32 *)args) = (__u32)temp_u16;
+		size = sizeof(__u32);
+		break;
+	case s16_ty:
+		/* read 2 bytes, but send 4 to keep alignment */
+		probe_read(&temp_s16, sizeof(__s16), &arg);
+		*((__s32 *)args) = (__s32)temp_s16;
+		size = sizeof(__s32);
+		break;
+	case u8_ty:
+		/* read 1 byte, but send 4 to keep alignment */
+		probe_read(&temp_u8, sizeof(__u8), &arg);
+		*((__u32 *)args) = (__u32)temp_u8;
 		size = sizeof(__u32);
 		break;
 	case s8_ty:
-	case u8_ty:
 		/* read 1 byte, but send 4 to keep alignment */
-		probe_read(args, sizeof(__u8), &arg);
-		size = sizeof(__u32);
+		probe_read(&temp_s8, sizeof(__s8), &arg);
+		*((__s32 *)args) = (__s32)temp_s8;
+		size = sizeof(__s32);
 		break;
 	case skb_type:
 		size = copy_skb(args, arg);

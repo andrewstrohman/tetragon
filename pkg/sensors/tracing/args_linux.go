@@ -85,7 +85,7 @@ func getArg(r *bytes.Reader, a argPrinter) api.MsgGenericKprobeArg {
 	var err error
 
 	switch a.ty {
-	case gt.GenericIntType, gt.GenericS32Type:
+	case gt.GenericIntType, gt.GenericS32Type, gt.GenericS16Type, gt.GenericS8Type:
 		var output int32
 		var arg api.MsgGenericKprobeArgInt
 
@@ -370,7 +370,7 @@ func getArg(r *bytes.Reader, a argPrinter) api.MsgGenericKprobeArg {
 		arg.MapName = string(output.MapName[:length])
 		arg.Label = a.label
 		return arg
-	case gt.GenericU32Type:
+	case gt.GenericU32Type, gt.GenericU16Type, gt.GenericU8Type:
 		var output uint32
 		var arg api.MsgGenericKprobeArgUInt
 
@@ -441,58 +441,6 @@ func getArg(r *bytes.Reader, a argPrinter) api.MsgGenericKprobeArg {
 			arg.Name = string(output.Name[:i])
 			arg.Taints = output.Taints
 		}
-		arg.Label = a.label
-		return arg
-	case gt.GenericU16Type:
-		var output uint32
-		var arg api.MsgGenericKprobeArgUInt
-
-		err := binary.Read(r, binary.LittleEndian, &output)
-		if err != nil {
-			logger.GetLogger().Warn("UInt type error", logfields.Error, err)
-		}
-
-		arg.Index = uint64(a.index)
-		arg.Value = uint32(uint16(output))
-		arg.Label = a.label
-		return arg
-	case gt.GenericU8Type:
-		var output uint32
-		var arg api.MsgGenericKprobeArgUInt
-
-		err := binary.Read(r, binary.LittleEndian, &output)
-		if err != nil {
-			logger.GetLogger().Warn("UInt type error", logfields.Error, err)
-		}
-
-		arg.Index = uint64(a.index)
-		arg.Value = uint32(uint8(output))
-		arg.Label = a.label
-		return arg
-	case gt.GenericS16Type:
-		var output uint32
-		var arg api.MsgGenericKprobeArgInt
-
-		err := binary.Read(r, binary.LittleEndian, &output)
-		if err != nil {
-			logger.GetLogger().Warn("Int type error", logfields.Error, err)
-		}
-
-		arg.Index = uint64(a.index)
-		arg.Value = int32(int16(output))
-		arg.Label = a.label
-		return arg
-	case gt.GenericS8Type:
-		var output uint32
-		var arg api.MsgGenericKprobeArgInt
-
-		err := binary.Read(r, binary.LittleEndian, &output)
-		if err != nil {
-			logger.GetLogger().Warn("Int type error", logfields.Error, err)
-		}
-
-		arg.Index = uint64(a.index)
-		arg.Value = int32(int8(output))
 		arg.Label = a.label
 		return arg
 	case gt.GenericKernelCap:
