@@ -6499,6 +6499,7 @@ type KprobeArgumentChecker struct {
 	SockaddrArg           *KprobeSockaddrChecker       `json:"sockaddrArg,omitempty"`
 	BpfProgArg            *KprobeBpfProgChecker        `json:"bpfProgArg,omitempty"`
 	Label                 *stringmatcher.StringMatcher `json:"label,omitempty"`
+	ResolveErrDepth       *int32                       `json:"resolveErrDepth,omitempty"`
 }
 
 // NewKprobeArgumentChecker creates a new KprobeArgumentChecker
@@ -6823,6 +6824,11 @@ func (checker *KprobeArgumentChecker) Check(event *tetragon.KprobeArgument) erro
 				return fmt.Errorf("Label check failed: %w", err)
 			}
 		}
+		if checker.ResolveErrDepth != nil {
+			if *checker.ResolveErrDepth != event.ResolveErrDepth {
+				return fmt.Errorf("ResolveErrDepth has value %d which does not match expected value %d", event.ResolveErrDepth, *checker.ResolveErrDepth)
+			}
+		}
 		return nil
 	}
 	if err := fieldChecks(); err != nil {
@@ -7018,6 +7024,12 @@ func (checker *KprobeArgumentChecker) WithLabel(check *stringmatcher.StringMatch
 	return checker
 }
 
+// WithResolveErrDepth adds a ResolveErrDepth check to the KprobeArgumentChecker
+func (checker *KprobeArgumentChecker) WithResolveErrDepth(check int32) *KprobeArgumentChecker {
+	checker.ResolveErrDepth = &check
+	return checker
+}
+
 //FromKprobeArgument populates the KprobeArgumentChecker using data from a KprobeArgument field
 func (checker *KprobeArgumentChecker) FromKprobeArgument(event *tetragon.KprobeArgument) *KprobeArgumentChecker {
 	if event == nil {
@@ -7194,6 +7206,10 @@ func (checker *KprobeArgumentChecker) FromKprobeArgument(event *tetragon.KprobeA
 		}
 	}
 	checker.Label = stringmatcher.Full(event.Label)
+	{
+		val := event.ResolveErrDepth
+		checker.ResolveErrDepth = &val
+	}
 	return checker
 }
 
