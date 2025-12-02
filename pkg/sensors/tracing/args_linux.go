@@ -23,12 +23,13 @@ import (
 )
 
 type argPrinter struct {
-	ty       int
-	userType int
-	index    int
-	maxData  bool
-	label    string
-	data     bool
+	ty          int
+	userType    int
+	index       int
+	maxData     bool
+	label       string
+	data        bool
+	BTFPtrNames [api.MaxBTFArgDepth]string
 }
 
 const (

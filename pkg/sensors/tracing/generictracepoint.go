@@ -136,7 +136,8 @@ type genericTracepointArg struct {
 	userType string
 
 	// data for config.BTFArg
-	btf [tracingapi.MaxBTFArgDepth]tracingapi.ConfigBTFArg
+	btf         [tracingapi.MaxBTFArgDepth]tracingapi.ConfigBTFArg
+	btfPtrNames [tracingapi.MaxBTFArgDepth]string
 }
 
 func genericTracepointTableGet(id idtable.EntryID) (*genericTracepoint, error) {
@@ -322,6 +323,7 @@ func buildArgsRaw(info *tracepoint.Tracepoint, specArgs []v1alpha1.KProbeArg) ([
 	ret := make([]genericTracepointArg, 0, len(specArgs))
 	for i, tpArg := range specArgs {
 		var btf [tracingapi.MaxBTFArgDepth]tracingapi.ConfigBTFArg
+		var btfPtrNames [tracingapi.MaxBTFArgDepth]string
 
 		if tpArg.Index > 5 {
 			return nil, fmt.Errorf("raw tracepoint (%s/%s) can read up to %d arguments, but %d was requested",
@@ -346,15 +348,17 @@ func buildArgsRaw(info *tracepoint.Tracepoint, specArgs []v1alpha1.KProbeArg) ([
 			}
 			fn := "__bpf_trace_" + info.Event
 
-			lastBTFType, btfArg, err := resolveBTFArg(fn, &tpArg, true)
+			lastBTFType, btfArg, btfPtrName, err := resolveBTFArg(fn, &tpArg, true)
 			if err != nil {
 				return nil, fmt.Errorf("error on hook %q for index %d : %w", fn, tpArg.Index, err)
 			}
 			btf = btfArg
+			btfPtrNames = btfPtrName
 			argType = findTypeFromBTFType(&tpArg, lastBTFType)
 		}
 
 		arg.btf = btf
+		arg.btfPtrNames = btfPtrNames
 		arg.genericTypeId = argType
 		ret = append(ret, arg)
 	}
