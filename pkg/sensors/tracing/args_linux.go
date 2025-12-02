@@ -23,12 +23,13 @@ import (
 )
 
 type argPrinter struct {
-	ty       int
-	userType int
-	index    int
-	maxData  bool
-	label    string
-	data     bool
+	ty          int
+	userType    int
+	index       int
+	maxData     bool
+	label       string
+	data        bool
+	BTFPtrNames [api.MaxBTFArgDepth]string
 }
 
 const (
@@ -102,7 +103,7 @@ func getTracepointMetaValue(arg *v1alpha1.KProbeArg) int {
 	return 0
 }
 
-func getArgStatus(r *bytes.Reader) (*api.MsgGenericKprobeArgError, bool) {
+func getArgStatus(r *bytes.Reader, BTFPtrNames [api.MaxBTFArgDepth]string) (*api.MsgGenericKprobeArgError, bool) {
 	var status uint32
 	var arg api.MsgGenericKprobeArgError
 
@@ -112,7 +113,11 @@ func getArgStatus(r *bytes.Reader) (*api.MsgGenericKprobeArgError, bool) {
 	}
 
 	if status != 0 {
-		arg.Message = fmt.Sprintf("%d", status)
+		ptr_name := "pointer"
+		if len(BTFPtrNames[status-1]) != 0 {
+			ptr_name = BTFPtrNames[status-1]
+		}
+		arg.Message = "failed to dereference " + ptr_name
 		return &arg, false
 	}
 	return nil, false
@@ -121,7 +126,7 @@ func getArgStatus(r *bytes.Reader) (*api.MsgGenericKprobeArgError, bool) {
 func getArg(r *bytes.Reader, a argPrinter) api.MsgGenericKprobeArg {
 	var err error
 
-	if errorArg, isReadErr := getArgStatus(r); isReadErr {
+	if errorArg, isReadErr := getArgStatus(r, a.BTFPtrNames); isReadErr {
 		return nil
 	} else if errorArg != nil {
 		errorArg.Index = uint64(a.index)
